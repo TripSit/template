@@ -1,0 +1,52 @@
+version: '3.9'
+
+name: service
+
+########################### EXTENSION FIELDS
+# Common environment values
+x-environment: &default-tz-puid-pgid
+  TZ: 'America/Chicago'
+  PUID: '1000'
+  PGID: '1000'
+
+# Keys common to some of the dependent services/apps
+x-common-keys-apps: &common-keys-apps
+  security_opt:
+    - no-new-privileges:true
+  restart: unless-stopped
+
+########################### SERVICES
+services:
+  service:
+    <<: *common-keys-apps
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+      # Only will build development stage from our dockerfile
+      target: development
+    container_name: service
+    working_dir: /usr/src/app
+    environment:
+      <<: *default-tz-puid-pgid
+    volumes:
+      # - ${DOCKERDIR}/appdata/service/data:/data
+      # - ${DOCKERDIR}/service/data/config.json:/data/config.json
+      - ./src:/src
+    networks:
+      service-net:
+    labels:
+      - com.centurylinklabs.watchtower.enable=false
+      - traefik.enable=true
+      - traefik.docker.network=service-net
+      - traefik.http.services.service-svc.loadbalancer.server.port=80
+
+      - traefik.http.routers.service-cloudflare.rule=Host(`service.${DNS_DOMAIN}`)
+      - traefik.http.routers.service-cloudflare.service=service-svc
+      - traefik.http.routers.service-cloudflare.tls.certresolver=letsencrypt
+      - traefik.http.routers.service-cloudflare.middlewares=default@file
+      - traefik.http.routers.service-cloudflare.entrypoints=websecure
+
+########################### NETWORKS
+networks:
+  service-net:
+    name: service-net

@@ -1,0 +1,61 @@
+{
+  "name": "template",
+  "version": "1.0.0",
+  "description": "A template for future projects.",
+  "main": "index.ts",
+  "engines": {
+    "node": "v20.5.0",
+    "npm": "9.8.0"
+  },
+  "scripts": {
+    "## DOCKER ##": "",
+    "service": "docker compose --project-name project up -d --force-recreate --build service",
+    "logs": "docker container logs service -f -n 100",
+    "lint": "docker exec -it service npm run .lint",
+    "test": "docker exec -it service npm run .test",
+    "## LOCAL ##": "",
+    ".start": "npx tsc-watch --onSuccess 'npx nodemon --config ./nodemon.json'",
+    ".lint": "npx eslint --fix --ext .ts,.tsx,.cts,.mts . --cache",
+    ".test": "npx jest --silent -c ./src/jest/jest.unit.config.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TripSit/template.git"
+  },
+  "author": "moonbear",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TripSit/template/issues"
+  },
+  "homepage": "https://github.com/TripSit/template#readme",
+  "dependencies": {
+    "common-tags": "^1.8.2",
+    "dotenv": "^16.3.1",
+    "luxon": "^3.4.0",
+    "path": "^0.12.7",
+    "source-map-support": "^0.5.21",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "@types/common-tags": "^1.8.1",
+    "@types/jest": "^29.5.3",
+    "@types/luxon": "^3.3.1",
+    "@types/node": "^20.5.0",
+    "@types/source-map-support": "^0.5.6",
+    "@typescript-eslint/eslint-plugin": "^6.3.0",
+    "@typescript-eslint/parser": "^6.3.0",
+    "eslint": "^8.47.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.1.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-import-resolver-typescript": "^3.6.0",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-jest": "^27.2.3",
+    "eslint-plugin-sonarjs": "^0.20.0",
+    "jest": "^29.6.2",
+    "sonar-scanner": "^3.1.0",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
+    "tsc-watch": "^6.0.4"
+  }
+}
